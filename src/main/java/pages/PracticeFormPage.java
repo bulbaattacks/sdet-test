@@ -1,5 +1,6 @@
 package pages;
 
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -8,9 +9,12 @@ import java.io.File;
 
 public class PracticeFormPage {
 
-    private WebDriver driver;
+    private static final String PAGE_URL = "https://demoqa.com/automation-practice-form";
 
-    private static String PAGE_URL="https://demoqa.com/automation-practice-form";
+    private final WebDriver driver;
+
+    @FindBy(xpath = "//h1")
+    WebElement header;
 
     @FindBy(id = "firstName")
     WebElement firstName;
@@ -51,73 +55,80 @@ public class PracticeFormPage {
     @FindBy(id = "example-modal-sizes-title-lg")
     WebElement successPopup;
 
-
-    // PAGE_URL где его указать? здесь или в бифор ич?
-    public PracticeFormPage(WebDriver driver){
-        this.driver=driver;
-        driver.get(PAGE_URL);
+    public PracticeFormPage(WebDriver driver) {
+        this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
-    public void setFirstname(String userFirstname){
+    public void open() {
+        driver.get(PAGE_URL);
+    }
+
+    public void verifyHeader() {
+        String getHeadertext = header.getText().trim();
+        Assertions.assertEquals("Practice Form", getHeadertext);
+    }
+
+    public void setFirstname(String userFirstname) {
         firstName.sendKeys(userFirstname);
     }
 
-    public void setLastname(String userLastname){
+    public void setLastname(String userLastname) {
         lastName.sendKeys(userLastname);
     }
 
-    public void setUserEmail(String userEmail){
+    public void setUserEmail(String userEmail) {
         email.sendKeys(userEmail);
     }
 
-    public void setGender(String userGender){
-        ((JavascriptExecutor)driver).executeScript("arguments[0].checked = true;",gender);
+    public void setGender() {
+        ((JavascriptExecutor) driver).executeScript(Gender.MALE.label, gender);
     }
 
-    public void setNumber(String userNumber){
+    public void setNumber(String userNumber) {
         number.sendKeys(userNumber);
     }
 
-    public void setDateOfBirth(String userDateOfBirth){
+    public void setDateOfBirth(String userDateOfBirth) {
         dateOfBirth.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         dateOfBirth.sendKeys(userDateOfBirth);
         dateOfBirth.sendKeys(Keys.chord(Keys.ENTER));
     }
 
-    public void setSubjects(String userSubjects){
-        subjects.sendKeys("English");
+    public void setSubjects(String userSubjects) {
+        subjects.sendKeys(userSubjects);
         subjects.sendKeys(Keys.DOWN);
         subjects.sendKeys(Keys.ENTER);
     }
 
-    public void uploadFile(File userFile){
+    public void uploadFile(File userFile) {
         file.sendKeys(userFile.getAbsolutePath());
     }
 
-    public void setAddress(String userAddress){
+    public void setAddress(String userAddress) {
         address.sendKeys(userAddress);
     }
 
-    public void setState(){
+    public void setState() {
         state.sendKeys(Keys.DOWN);
         state.sendKeys(Keys.ENTER);
     }
 
-    public void setCity(){
+    public void setCity() {
         city.sendKeys(Keys.DOWN);
         city.sendKeys(Keys.ENTER);
     }
 
-    public void clickSubmit(){
+    public void clickSubmit() {
         sbmt.click();
     }
 
-    public void isFormSubmitted(String submittedForm){
-        successPopup.getText().contains(submittedForm);
+    public String isFormSubmitted() {
+        return successPopup.getText();
     }
 
-    public void isFilledDataShown(){
+    // TODO refactoring
+    public void isFilledDataShown() {
         firstName.isDisplayed();
         lastName.isDisplayed();
         email.isDisplayed();
@@ -131,4 +142,15 @@ public class PracticeFormPage {
         city.isDisplayed();
     }
 
+    enum Gender {
+        MALE("arguments[0].checked = true;"),
+        FEMALE("arguments[1].checked = true;"),
+        OTHER("arguments[2].checked = true;");
+
+        public final String label;
+
+        Gender(String label) {
+            this.label = label;
+        }
+    }
 }

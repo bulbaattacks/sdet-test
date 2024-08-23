@@ -1,4 +1,5 @@
 import driver.ChromeWebDriver;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
@@ -9,7 +10,7 @@ import java.io.File;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class InitTest {
+class InitTest {
 
     WebDriver driver;
 
@@ -27,13 +28,15 @@ public class InitTest {
 //    }
 
     @Test
-    void case1() throws InterruptedException {
-
+    void fillStudentRegistrationForm() {
         PracticeFormPage practiceForm = new PracticeFormPage(driver);
+        practiceForm.open();
+        practiceForm.verifyHeader();
+
         practiceForm.setFirstname("Arina");
         practiceForm.setLastname("Zubova");
         practiceForm.setUserEmail("test@mail.ru");
-        practiceForm.setGender("Male");
+        practiceForm.setGender();
         practiceForm.setNumber("1234567890");
         practiceForm.setDateOfBirth("10 Aug 1996");
         practiceForm.setSubjects("English");
@@ -42,7 +45,7 @@ public class InitTest {
         practiceForm.setState();
         practiceForm.setCity();
         practiceForm.clickSubmit();
-        practiceForm.isFormSubmitted("Thanks for submitting the form");
+        Assertions.assertEquals("Thanks for submitting the form", practiceForm.isFormSubmitted());
         practiceForm.isFilledDataShown();
 
     }
