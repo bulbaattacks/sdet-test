@@ -4,8 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import util.UtilKey;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PracticeFormPage {
 
@@ -55,6 +59,9 @@ public class PracticeFormPage {
     @FindBy(id = "example-modal-sizes-title-lg")
     WebElement successPopup;
 
+    @FindBy(css = "body > div.fade.modal.show > div > div > div.modal-body > div > table > tbody > tr > td")
+    List<WebElement> successTable;
+
     public PracticeFormPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -65,8 +72,8 @@ public class PracticeFormPage {
     }
 
     public void verifyHeader() {
-        String getHeadertext = header.getText().trim();
-        Assertions.assertEquals("Practice Form", getHeadertext);
+        String getHeaderText = header.getText().trim();
+        Assertions.assertEquals("Practice Form", getHeaderText);
     }
 
     public void setFirstname(String userFirstname) {
@@ -90,7 +97,7 @@ public class PracticeFormPage {
     }
 
     public void setDateOfBirth(String userDateOfBirth) {
-        dateOfBirth.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        dateOfBirth.sendKeys(Keys.chord(UtilKey.control(), "a"));
         dateOfBirth.sendKeys(userDateOfBirth);
         dateOfBirth.sendKeys(Keys.chord(Keys.ENTER));
     }
@@ -127,19 +134,18 @@ public class PracticeFormPage {
         return successPopup.getText();
     }
 
-    // TODO refactoring
-    public void isFilledDataShown() {
-        firstName.isDisplayed();
-        lastName.isDisplayed();
-        email.isDisplayed();
-        gender.isDisplayed();
-        number.isDisplayed();
-        dateOfBirth.isDisplayed();
-        subjects.isDisplayed();
-        file.isDisplayed();
-        address.isDisplayed();
-        state.isDisplayed();
-        city.isDisplayed();
+    public Set<String> parseSuccessTable() {
+        Set<String> set = new HashSet<>();
+        boolean isSecondValue = false;
+        for (WebElement t : successTable) {
+            if (isSecondValue) {
+                set.add(t.getText());
+                isSecondValue = false;
+            } else {
+                isSecondValue = true;
+            }
+        }
+        return set;
     }
 
     enum Gender {

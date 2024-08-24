@@ -6,10 +6,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class ChromeWebDriver {
 
-    private ChromeWebDriver() {
-        throw new IllegalStateException("Utility class");
-    }
-
     public static WebDriver newDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--no-sandbox");
@@ -18,5 +14,9 @@ public class ChromeWebDriver {
         chromeOptions.addArguments("--ignore-certificate-errors");
         chromeOptions.addArguments("--start-maximized");
         return new ChromeDriver(chromeOptions);
+    }
+
+    private ChromeWebDriver() {
+        throw new IllegalStateException("Utility class");
     }
 }
